@@ -137,11 +137,39 @@ const seedMockDatabase = () => {
   localStorage.setItem('medroute_inventory', JSON.stringify(inventory));
   localStorage.setItem('medroute_manifests', JSON.stringify([]));
   console.log('MedRoute LocalStorage DB initialized with real Karnataka Clinics.');
+  return { medicines, clinics, inventory };
 };
 
 if (!localStorage.getItem('medroute_clinics')) {
   seedMockDatabase();
 }
+
+// Auto-seed live Firestore if empty
+const seedLiveFirestore = async () => {
+  if (!db) return;
+  try {
+    console.log('Attempting to seed live Firestore with Karnataka datasets...');
+    const { medicines, clinics, inventory } = seedMockDatabase();
+
+    // Write medicines
+    for (const m of medicines) {
+      await setDoc(doc(db, 'medicines', m.id.toString()), m);
+    }
+
+    // Write clinics
+    for (const c of clinics) {
+      await setDoc(doc(db, 'clinics', c.id.toString()), c);
+    }
+
+    // Write inventory
+    for (const inv of inventory) {
+      await setDoc(doc(db, 'inventory', inv.id.toString()), inv);
+    }
+    console.log('Live Firestore successfully seeded!');
+  } catch (error) {
+    console.error('Error seeding live Firestore:', error);
+  }
+};
 
 // ----------------------------------------------------
 // FIREBASE AUTH & FIRESTORE DATABASE SERVICE
@@ -154,6 +182,11 @@ export const dbService = {
     if (db) {
       try {
         const snap = await getDocs(collection(db, 'medicines'));
+        if (snap.empty) {
+          await seedLiveFirestore();
+          const reSnap = await getDocs(collection(db, 'medicines'));
+          return reSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
         return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (e) {
         console.error('Firestore getMedicines error, falling back:', e);
@@ -167,6 +200,11 @@ export const dbService = {
     if (db) {
       try {
         const snap = await getDocs(collection(db, 'clinics'));
+        if (snap.empty) {
+          await seedLiveFirestore();
+          const reSnap = await getDocs(collection(db, 'clinics'));
+          return reSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
         return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (e) {
         console.error('Firestore getClinics error, falling back:', e);
@@ -180,6 +218,11 @@ export const dbService = {
     if (db) {
       try {
         const snap = await getDocs(collection(db, 'inventory'));
+        if (snap.empty) {
+          await seedLiveFirestore();
+          const reSnap = await getDocs(collection(db, 'inventory'));
+          return reSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
         return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (e) {
         console.error('Firestore getInventory error, falling back:', e);
