@@ -177,7 +177,7 @@ export const api = {
   },
 
   // Update manifest status (start delivery, sign signature)
-  async updateManifest(id, status, driverSignature = null) {
+  async updateManifest(id, status, driverSignature = null, receivedQuantity = null) {
     const manifests = await dbService.getManifests();
     const manifestIndex = manifests.findIndex(m => m.id === parseInt(id));
     if (manifestIndex === -1) throw new Error('Manifest not found');
@@ -186,6 +186,15 @@ export const api = {
     manifest.status = status;
     if (driverSignature) {
       manifest.driver_signature = driverSignature;
+    }
+
+    if (receivedQuantity !== null && status === 'delivered') {
+      const parsedQty = parseInt(receivedQuantity);
+      manifest.received_quantity = parsedQty;
+      manifest.has_discrepancy = parsedQty !== manifest.quantity;
+    } else if (status === 'delivered') {
+      manifest.received_quantity = manifest.quantity;
+      manifest.has_discrepancy = false;
     }
 
     // If delivered, add stock to the recipient clinic
@@ -203,15 +212,17 @@ export const api = {
           inv.medicine_id === med.id
         );
 
+        const deliveredAmt = manifest.received_quantity !== undefined ? manifest.received_quantity : manifest.quantity;
+
         if (destInv) {
-          destInv.current_stock += manifest.quantity;
+          destInv.current_stock += deliveredAmt;
         } else {
           inventory.push({
             id: inventory.length + 1,
             clinic_id: destClinic.id,
             medicine_id: med.id,
             batch_name: `B-TRANS-${manifest.id}`,
-            current_stock: manifest.quantity,
+            current_stock: deliveredAmt,
             avg_daily_consumption: 1.0,
             days_to_expiry: 120,
             visit_trend: 0.0,
@@ -226,11 +237,14 @@ export const api = {
 
     // Trigger simulated event
     if (this._onAlertCallback) {
+      const discrepancyText = manifest.has_discrepancy 
+        ? ` WITH DISCREPANCY (expected ${manifest.quantity}, got ${manifest.received_quantity})`
+        : '';
       this._onAlertCallback({
         type: 'manifest_updated',
         manifest_id: manifest.id,
         status: status,
-        message: `ROUTE UPDATE: Manifest #${manifest.id} is now ${status.toUpperCase()}.`,
+        message: `ROUTE UPDATE: Manifest #${manifest.id} is now ${status.toUpperCase()}${discrepancyText}.`,
         timestamp: new Date().toISOString()
       });
     }

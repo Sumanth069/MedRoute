@@ -7,6 +7,7 @@ export default function DriverApp() {
   const [manifests, setManifests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeSignId, setActiveSignId] = useState(null);
+  const [receivedQuantities, setReceivedQuantities] = useState({});
   
   const canvasRef = useRef(null);
   const isDrawingRef = useRef(false);
@@ -28,9 +29,9 @@ export default function DriverApp() {
     loadManifests();
   }, []);
 
-  const handleUpdateStatus = async (id, status, signature = null) => {
+  const handleUpdateStatus = async (id, status, signature = null, receivedQty = null) => {
     try {
-      await api.updateManifest(id, status, signature);
+      await api.updateManifest(id, status, signature, receivedQty);
       loadManifests();
       setActiveSignId(null);
     } catch (err) {
@@ -87,12 +88,17 @@ export default function DriverApp() {
   };
 
   const submitSignature = (manifestId) => {
+    const qty = receivedQuantities[manifestId];
+    if (qty === undefined || qty === '') {
+      alert('Intake verification count is required to confirm delivery.');
+      return;
+    }
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     // Get base64 data string representation of drawn canvas
     const signatureDataUrl = canvas.toDataURL('image/png');
-    handleUpdateStatus(manifestId, 'delivered', signatureDataUrl);
+    handleUpdateStatus(manifestId, 'delivered', signatureDataUrl, qty);
   };
 
   return (
@@ -130,10 +136,10 @@ export default function DriverApp() {
             <div key={m.id} className="driver-manifest-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <span className="manifest-status-badge pending" style={{ 
-                  color: m.status === 'delivered' ? '#34d399' : m.status === 'in_transit' ? '#60a5fa' : '#fbbf24',
-                  backgroundColor: m.status === 'delivered' ? 'rgba(16, 185, 129, 0.1)' : m.status === 'in_transit' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(245, 158, 11, 0.1)'
+                  color: m.status === 'delivered' ? (m.has_discrepancy ? '#ef4444' : '#34d399') : m.status === 'in_transit' ? '#60a5fa' : '#fbbf24',
+                  backgroundColor: m.status === 'delivered' ? (m.has_discrepancy ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)') : m.status === 'in_transit' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(245, 158, 11, 0.1)'
                 }}>
-                  {m.status.replace('_', ' ')}
+                  {m.status === 'delivered' && m.has_discrepancy ? 'delivered with discrepancy' : m.status.replace('_', ' ')}
                 </span>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Manifest #{m.id}</span>
               </div>
@@ -198,22 +204,68 @@ export default function DriverApp() {
 
               {/* Signature Capture Box */}
               {activeSignId === m.id && (
-                <div style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px' }}>
+                <div style={{ marginTop: '12px', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
+                  {/* Intake Verification Input Field */}
+                  <div style={{ marginBottom: '14px', background: 'rgba(0, 0, 0, 0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <label style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-bright)', display: 'block', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+                      INTAKE VERIFICATION (ACTUALLY RECEIVED COUNT):
+                    </label>
+                    <input 
+                      type="number"
+                      placeholder={`Enter actual units received (Intended: ${m.quantity})`}
+                      value={receivedQuantities[m.id] !== undefined ? receivedQuantities[m.id] : ''}
+                      onChange={(e) => setReceivedQuantities({
+                        ...receivedQuantities,
+                        [m.id]: e.target.value
+                      })}
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        borderRadius: '6px',
+                        border: '1px solid var(--border-color)',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-bright)',
+                        fontSize: '13.5px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s',
+                        height: '40px',
+                        boxSizing: 'border-box'
+                      }}
+                      min="0"
+                    />
+                    
+                    {/* Dynamic Mismatch Alert */}
+                    {receivedQuantities[m.id] !== undefined && receivedQuantities[m.id] !== '' && parseInt(receivedQuantities[m.id]) !== m.quantity && (
+                      <div style={{ 
+                        marginTop: '8px', 
+                        padding: '8px 10px', 
+                        borderRadius: '6px', 
+                        backgroundColor: 'rgba(239, 68, 68, 0.08)', 
+                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                        color: '#ef4444',
+                        fontSize: '11px',
+                        lineHeight: '1.4'
+                      }}>
+                        ⚠️ Intake mismatch! Intended: {m.quantity}, Received: {receivedQuantities[m.id]}. This discrepancy will be permanently flagged in the logistics ledger.
+                      </div>
+                    )}
+                  </div>
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-bright)' }}>
-                      Recipient E-Signature:
+                    <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-bright)' }}>
+                      RECIPIENT E-SIGNATURE:
                     </span>
                     <button 
                       onClick={clearSignature}
-                      style={{ background: 'none', border: 'none', color: '#f87171', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                      style={{ background: 'none', border: 'none', color: '#f87171', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}
                     >
                       <Trash2 size={12} />
-                      Clear Signature
+                      Clear
                     </button>
                   </div>
                   
                   {/* Drawing Signature Canvas */}
-                  <div className="signature-box">
+                  <div className="signature-box" style={{ background: '#f8fafc', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
                     <canvas 
                       ref={canvasRef}
                       className="signature-canvas"
@@ -226,8 +278,9 @@ export default function DriverApp() {
                       onTouchStart={startDrawing}
                       onTouchMove={draw}
                       onTouchEnd={stopDrawing}
+                      style={{ filter: 'invert(1)', background: 'transparent' }}
                     />
-                    <div style={{ color: 'rgba(255,255,255,0.15)', fontSize: '12px', pointerEvents: 'none' }}>
+                    <div style={{ color: '#94a3b8', fontSize: '11.5px', pointerEvents: 'none' }}>
                       Sign here to confirm receipt
                     </div>
                   </div>
@@ -242,7 +295,11 @@ export default function DriverApp() {
                     <button 
                       className="btn btn-primary"
                       onClick={() => submitSignature(m.id)}
-                      style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+                      disabled={receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === ''}
+                      style={{ 
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        opacity: (receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === '') ? 0.5 : 1
+                      }}
                     >
                       Confirm Signature & Deliver
                     </button>
@@ -250,21 +307,44 @@ export default function DriverApp() {
                 </div>
               )}
 
-              {m.status === 'delivered' && m.driver_signature && (
-                <div style={{ marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                    Digital Signature Verified:
-                  </span>
-                  <img 
-                    src={m.driver_signature} 
-                    alt="Signature" 
-                    style={{ 
-                      height: '40px', 
-                      background: 'rgba(255,255,255,0.05)', 
-                      borderRadius: '4px',
-                      padding: '2px'
-                    }} 
-                  />
+              {m.status === 'delivered' && (
+                <div style={{ marginTop: '10px', borderTop: '1px solid var(--border-color)', paddingTop: '8px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                    <span>Delivered: <strong>{m.received_quantity !== undefined ? m.received_quantity : m.quantity} units</strong></span>
+                    {m.has_discrepancy && (
+                      <div style={{ 
+                        marginTop: '6px', 
+                        padding: '6px 8px', 
+                        borderRadius: '4px', 
+                        backgroundColor: 'rgba(239, 68, 68, 0.05)', 
+                        border: '1px solid rgba(239, 68, 68, 0.15)',
+                        color: '#dc2626',
+                        fontSize: '11px',
+                        fontWeight: '600'
+                      }}>
+                        ⚠️ Discrepancy logged: Intended {m.quantity} vs Actually Received {m.received_quantity}
+                      </div>
+                    )}
+                  </div>
+                  {m.driver_signature && (
+                    <>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+                        Digital Signature Verified:
+                      </span>
+                      <img 
+                        src={m.driver_signature} 
+                        alt="Signature" 
+                        style={{ 
+                          height: '40px', 
+                          background: '#f8fafc', 
+                          border: '1px solid var(--border-color)',
+                          borderRadius: '4px',
+                          padding: '2px',
+                          filter: 'invert(1)'
+                        }} 
+                      />
+                    </>
+                  )}
                 </div>
               )}
             </div>

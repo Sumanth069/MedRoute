@@ -222,6 +222,28 @@ export default function Dashboard() {
           )}
         </div>
 
+        {/* Section 2.5: Genetic Algorithm Solver Parameters */}
+        <div className="sidebar-section">
+          <h3 style={{ fontSize: '13px', color: 'var(--text-bright)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Zap size={14} style={{ color: '#fbbf24' }} />
+            AI ROUTING SOLVER PARAMETERS
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', fontSize: '11px' }}>
+            <div className="glass-panel" style={{ padding: '6px 8px', borderRadius: '8px', textAlign: 'center', background: 'rgba(255, 255, 255, 0.4)' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase', marginBottom: '2px' }}>Population</div>
+              <strong style={{ color: 'var(--text-bright)' }}>40 chrom.</strong>
+            </div>
+            <div className="glass-panel" style={{ padding: '6px 8px', borderRadius: '8px', textAlign: 'center', background: 'rgba(255, 255, 255, 0.4)' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase', marginBottom: '2px' }}>Generations</div>
+              <strong style={{ color: 'var(--text-bright)' }}>30 epochs</strong>
+            </div>
+            <div className="glass-panel" style={{ padding: '6px 8px', borderRadius: '8px', textAlign: 'center', background: 'rgba(255, 255, 255, 0.4)' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase', marginBottom: '2px' }}>Mutation</div>
+              <strong style={{ color: 'var(--text-bright)' }}>30% rate</strong>
+            </div>
+          </div>
+        </div>
+
         {/* Section 3: Live WebSocket Alert Feed */}
         <div className="sidebar-section" style={{ borderBottom: 'none' }}>
           <h3 style={{ fontSize: '14px', color: 'var(--text-bright)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
