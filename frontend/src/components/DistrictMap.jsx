@@ -29,6 +29,7 @@ const createCustomIcon = (status) => {
 };
 
 export default function DistrictMap({ clinics, activeManifests, onSelectClinic, selectedClinicId }) {
+  console.log("DistrictMap clinics loaded:", clinics);
   // Center coordinates for Ramanagara/Tumkur region
   const center = [12.93, 77.25];
   const zoom = 9.5;
@@ -49,11 +50,14 @@ export default function DistrictMap({ clinics, activeManifests, onSelectClinic, 
 
         {/* Render Clinic Markers */}
         {clinics.map((clinic) => {
-          const isSelected = selectedClinicId === clinic.id;
+          const lat = parseFloat(clinic.latitude);
+          const lng = parseFloat(clinic.longitude);
+          if (isNaN(lat) || isNaN(lng)) return null;
+
           return (
             <Marker
               key={clinic.id}
-              position={[clinic.latitude, clinic.longitude]}
+              position={[lat, lng]}
               icon={createCustomIcon(clinic.status)}
               eventHandlers={{
                 click: () => onSelectClinic(clinic),
@@ -98,9 +102,16 @@ export default function DistrictMap({ clinics, activeManifests, onSelectClinic, 
             const destClinic = clinics.find(c => c.name === manifest.dest_clinic_name);
 
             if (srcClinic && destClinic) {
+              const srcLat = parseFloat(srcClinic.latitude);
+              const srcLng = parseFloat(srcClinic.longitude);
+              const destLat = parseFloat(destClinic.latitude);
+              const destLng = parseFloat(destClinic.longitude);
+
+              if (isNaN(srcLat) || isNaN(srcLng) || isNaN(destLat) || isNaN(destLng)) return null;
+
               const positions = [
-                [srcClinic.latitude, srcClinic.longitude],
-                [destClinic.latitude, destClinic.longitude]
+                [srcLat, srcLng],
+                [destLat, destLng]
               ];
 
               return (

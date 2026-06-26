@@ -14,10 +14,10 @@ export const api = {
       let warningCount = 0;
       let surplusCount = 0;
 
-      const clinicInventory = inventory.filter(inv => inv.clinic_id === clinic.id);
+      const clinicInventory = inventory.filter(inv => Number(inv.clinic_id) === Number(clinic.id));
 
       clinicInventory.forEach(inv => {
-        const medicine = medicines.find(m => m.id === inv.medicine_id);
+        const medicine = medicines.find(m => Number(m.id) === Number(inv.medicine_id));
         if (!medicine) return;
 
         const forecast = forecaster.predict(
@@ -61,16 +61,16 @@ export const api = {
   // Get clinic details including full inventories and SHAP AI forecasting
   async getClinicDetail(id) {
     const clinics = await dbService.getClinics();
-    const clinic = clinics.find(c => c.id === parseInt(id));
+    const clinic = clinics.find(c => Number(c.id) === Number(id));
     if (!clinic) throw new Error('Clinic not found');
 
     const medicines = await dbService.getMedicines();
     const inventory = await dbService.getInventory();
 
-    const clinicInventory = inventory.filter(inv => inv.clinic_id === clinic.id);
+    const clinicInventory = inventory.filter(inv => Number(inv.clinic_id) === Number(clinic.id));
 
     const inventoryDetails = clinicInventory.map(inv => {
-      const medicine = medicines.find(m => m.id === inv.medicine_id);
+      const medicine = medicines.find(m => Number(m.id) === Number(inv.medicine_id));
       
       const forecast = forecaster.predict(
         inv.current_stock,
@@ -121,8 +121,8 @@ export const api = {
   async createManifest(manifestData) {
     const inventory = await dbService.getInventory();
     const sourceInv = inventory.find(inv => 
-      inv.clinic_id === manifestData.source_clinic_id && 
-      inv.medicine_id === manifestData.medicine_id
+      Number(inv.clinic_id) === Number(manifestData.source_clinic_id) && 
+      Number(inv.medicine_id) === Number(manifestData.medicine_id)
     );
 
     if (!sourceInv || sourceInv.current_stock < manifestData.quantity) {
@@ -138,9 +138,9 @@ export const api = {
     const medicines = await dbService.getMedicines();
     const clinics = await dbService.getClinics();
     
-    const med = medicines.find(m => m.id === manifestData.medicine_id);
-    const srcClinic = clinics.find(c => c.id === manifestData.source_clinic_id);
-    const destClinic = clinics.find(c => c.id === manifestData.dest_clinic_id);
+    const med = medicines.find(m => Number(m.id) === Number(manifestData.medicine_id));
+    const srcClinic = clinics.find(c => Number(c.id) === Number(manifestData.source_clinic_id));
+    const destClinic = clinics.find(c => Number(c.id) === Number(manifestData.dest_clinic_id));
 
     const newManifest = {
       id: manifests.length + 1,
@@ -179,7 +179,7 @@ export const api = {
   // Update manifest status (start delivery, sign signature)
   async updateManifest(id, status, driverSignature = null, receivedQuantity = null) {
     const manifests = await dbService.getManifests();
-    const manifestIndex = manifests.findIndex(m => m.id === parseInt(id));
+    const manifestIndex = manifests.findIndex(m => Number(m.id) === Number(id));
     if (manifestIndex === -1) throw new Error('Manifest not found');
 
     const manifest = manifests[manifestIndex];
@@ -208,8 +208,8 @@ export const api = {
 
       if (destClinic && med) {
         const destInv = inventory.find(inv => 
-          inv.clinic_id === destClinic.id && 
-          inv.medicine_id === med.id
+          Number(inv.clinic_id) === Number(destClinic.id) && 
+          Number(inv.medicine_id) === Number(med.id)
         );
 
         const deliveredAmt = manifest.received_quantity !== undefined ? manifest.received_quantity : manifest.quantity;
@@ -293,7 +293,7 @@ export const api = {
     // Safety horizon average
     let totalHorizon = 0;
     inventory.forEach(inv => {
-      const med = medicines.find(m => m.id === inv.medicine_id);
+      const med = medicines.find(m => Number(m.id) === Number(inv.medicine_id));
       const forecast = forecaster.predict(
         inv.current_stock,
         inv.avg_daily_consumption,
@@ -330,8 +330,8 @@ export const api = {
         const alerts = [];
         
         inventory.forEach(inv => {
-          const clinic = clinics.find(c => c.id === inv.clinic_id);
-          const medicine = medicines.find(m => m.id === inv.medicine_id);
+          const clinic = clinics.find(c => Number(c.id) === Number(inv.clinic_id));
+          const medicine = medicines.find(m => Number(m.id) === Number(inv.medicine_id));
           if (!clinic || !medicine) return;
 
           const forecast = forecaster.predict(

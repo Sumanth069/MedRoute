@@ -27,8 +27,8 @@ export const optimizer = {
 
     // 1. Identify deficits and surpluses
     inventory.forEach(inv => {
-      const clinic = clinics.find(c => c.id === inv.clinic_id);
-      const medicine = medicines.find(m => m.id === inv.medicine_id);
+      const clinic = clinics.find(c => Number(c.id) === Number(inv.clinic_id));
+      const medicine = medicines.find(m => Number(m.id) === Number(inv.medicine_id));
       
       if (!clinic || !medicine) return;
 
@@ -86,7 +86,7 @@ export const optimizer = {
     const matches = [];
     surpluses.forEach((surp, sIdx) => {
       deficits.forEach((defc, dIdx) => {
-        if (surp.medicine.id === defc.medicine.id && surp.clinic.id !== defc.clinic.id) {
+        if (Number(surp.medicine.id) === Number(defc.medicine.id) && Number(surp.clinic.id) !== Number(defc.clinic.id)) {
           matches.push({ sIdx, dIdx });
         }
       });
@@ -113,8 +113,8 @@ export const optimizer = {
         const surp = surpluses[gene.sIdx];
         const defc = deficits[gene.dIdx];
 
-        if (surp.medicine.id !== defc.medicine.id) return -9999.0;
-        if (surp.clinic.id === defc.clinic.id) return -9999.0;
+        if (Number(surp.medicine.id) !== Number(defc.medicine.id)) return -9999.0;
+        if (Number(surp.clinic.id) === Number(defc.clinic.id)) return -9999.0;
 
         const sKey = surp.inventory_id;
         const alreadyDonated = usedSurplus[sKey] || 0;
