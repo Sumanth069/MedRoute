@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+sqlalchemy
+scikit-learn
+shap
+python-multipart
+websockets
