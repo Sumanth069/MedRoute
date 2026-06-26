@@ -240,7 +240,7 @@ def run_optimization(db: Session = Depends(get_db)):
 
 # 4. API: Create transfer manifests (approve route recommendation)
 @app.post("/api/manifests/create")
-def create_manifest(data: Dict[str, Any], db: Session = Depends(get_db)):
+async def create_manifest(data: Dict[str, Any], db: Session = Depends(get_db)):
     try:
         source_id = int(data["source_clinic_id"])
         dest_id = int(data["dest_clinic_id"])
@@ -279,11 +279,11 @@ def create_manifest(data: Dict[str, Any], db: Session = Depends(get_db)):
     db.refresh(manifest)
     
     # Broadcast WebSocket update alert
-    asyncio.create_task(manager.broadcast(json.dumps({
+    await manager.broadcast(json.dumps({
         "type": "manifest_created",
         "message": f"NEW MANIFEST: Driver dispatched to transfer {qty} units of {source_inv.medicine.name} from {source_inv.clinic.name} to {db.query(Clinic).get(dest_id).name}.",
         "timestamp": datetime_now_iso()
-    })))
+    }))
     
     return {
         "success": True,
@@ -316,7 +316,7 @@ def get_manifests(db: Session = Depends(get_db)):
 
 # 6. API: Update manifest status (Driver PWA action)
 @app.post("/api/manifests/{manifest_id}/update")
-def update_manifest(manifest_id: int, data: Dict[str, Any], db: Session = Depends(get_db)):
+async def update_manifest(manifest_id: int, data: Dict[str, Any], db: Session = Depends(get_db)):
     manifest = db.query(TransferManifest).filter(TransferManifest.id == manifest_id).first()
     if not manifest:
         raise HTTPException(status_code=404, detail="Manifest not found")
@@ -357,13 +357,13 @@ def update_manifest(manifest_id: int, data: Dict[str, Any], db: Session = Depend
     db.commit()
     
     # Broadcast status change to dashboard
-    asyncio.create_task(manager.broadcast(json.dumps({
+    await manager.broadcast(json.dumps({
         "type": "manifest_updated",
         "manifest_id": manifest.id,
         "status": new_status,
         "message": f"ROUTE UPDATE: Manifest #{manifest.id} is now {new_status.upper()}.",
         "timestamp": datetime_now_iso()
-    })))
+    }))
     
     return {"success": True, "status": manifest.status}
 
