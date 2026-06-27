@@ -8,6 +8,9 @@
   <p style="font-size: 1.25rem; font-weight: 500; color: #475569; max-width: 600px; margin: 0 auto;">
     The next-generation smart medical logistics command center solving drug wastage and vaccine stockouts in rural networks.
   </p>
+  <p style="font-size: 1.05rem; font-weight: 600; color: #64748b; margin-top: 8px;">
+    🚀 Built for <b>Theme 2 (Smart Cities, Sustainability, & Social Impact)</b> at Tech Genesis '26
+  </p>
   <br/>
 
   <div>
