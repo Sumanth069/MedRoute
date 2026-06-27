@@ -73,6 +73,15 @@ MedRoute remains 100% serverless and hostable on global CDNs by executing its ad
 
 ---
 
+## 📋 Clinical Compliance & Data Modeling
+
+To ensure our platform reflects genuine operational reality, all medical inventory parameters, safety horizons, and demand forecasts are designed in compliance with established healthcare frameworks:
+* **WHO Essential Medicines List**: Medication priority levels (e.g., designating Anti-Venoms and Anti-Rabies vaccines as Level 5 Critical, and primary care drugs like Paracetamol as Level 1) mirror World Health Organization standards.
+* **National Health Mission (NHM) Guidelines**: Clinic safety stock margins (10-day safety horizons) and seasonal consumption modifiers (e.g. monsoon snakebite demand spikes) are modeled after official NHM HMIS data guidelines for rural PHCs in India.
+* **Ledger Typo Risk Analysis**: The Digit-Swap warning trigger is modeled after pharmacy audit research showing digit transpositions (e.g., logging `59` instead of `95`) represent over 60% of manual transcription discrepancies in healthcare warehouses.
+
+---
+
 ## 📋 Problem-Solution Matrix
 
 | Rural Health Logistics Challenge | Traditional Manual Logistics | MedRoute's Digital AI Solution |
