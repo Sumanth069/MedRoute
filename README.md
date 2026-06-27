@@ -58,6 +58,9 @@ Eliminates administrative delays. If a clinic's supplies fall below a 10-day saf
 ### 🚚 Offline Driver Portal
 Designed for drivers in network dead zones. Allows delivery staff to confirm actual intake counts, flag transit discrepancies, and capture digital signatures on-screen with zero cell coverage.
 
+### 📱 True Progressive Web App (PWA)
+No App Store downloads required. MedRoute installs directly to mobile home screens with a single tap. Engineered with background service workers, it operates fully offline in remote clinics and dead zones, automatically syncing records once connection is restored.
+
 ---
 
 ## 🧠 Under the Hood: Smart Client-Side Computing
