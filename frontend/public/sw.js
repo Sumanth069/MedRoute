@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medroute-cache-v1';
+const CACHE_NAME = 'medroute-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -40,27 +40,46 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
     return;
   }
-  
+
+  const url = new URL(event.request.url);
+
+  // Network-First for main HTML page to prevent stale cache locking
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Cache-First for assets and static files
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
         return cachedResponse;
       }
       return fetch(event.request).then((response) => {
-        // Cache new fetch requests dynamically if they are successful
         if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-        
+
         const responseToCache = response.clone();
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseToCache);
         });
-        
+
         return response;
-      }).catch(() => {
-        // Offline fallback
-        return caches.match('/');
       });
     })
   );
