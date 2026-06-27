@@ -106,8 +106,8 @@ export default function PharmacistConsole({ clinicId }) {
   };
 
   // Trigger auto-requisition from surplus
-  const handleAutoRequisition = async (medicineId) => {
-    setRequestingTransferId(medicineId);
+  const handleAutoRequisition = async (inventoryId, medicineId) => {
+    setRequestingTransferId(inventoryId);
     setRequisitionMsg('');
     try {
       const res = await api.requestAutoRequisition(clinicId, medicineId);
@@ -504,7 +504,9 @@ export default function PharmacistConsole({ clinicId }) {
                   >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <strong style={{ color: 'var(--text-bright)', fontSize: '14px' }}>{item.medicine_name}</strong>
+                        <strong style={{ color: 'var(--text-bright)', fontSize: '14px' }}>
+                          {item.medicine_name} <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'normal' }}>({item.batch_name})</span>
+                        </strong>
                         <span style={{ fontSize: '10px', background: '#fee2e2', color: '#991b1b', padding: '2px 6px', borderRadius: '4px', fontWeight: '700' }}>
                           Horizon: {item.days_until_stockout.toFixed(1)}d
                         </span>
@@ -515,7 +517,7 @@ export default function PharmacistConsole({ clinicId }) {
                     </div>
 
                     <button 
-                      onClick={() => handleAutoRequisition(item.medicine_id)}
+                      onClick={() => handleAutoRequisition(item.id, item.medicine_id)}
                       disabled={requestingTransferId !== null}
                       className="btn btn-primary"
                       style={{
@@ -531,7 +533,7 @@ export default function PharmacistConsole({ clinicId }) {
                       }}
                     >
                       <Send size={12} />
-                      {requestingTransferId === item.medicine_id ? 'Requesting...' : 'Request Smart Requisition'}
+                      {requestingTransferId === item.id ? 'Requesting...' : 'Request Smart Requisition'}
                     </button>
                   </div>
                 ))

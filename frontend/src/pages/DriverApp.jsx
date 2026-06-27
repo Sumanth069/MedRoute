@@ -36,13 +36,18 @@ export default function DriverApp() {
     loadManifests();
   }, []);
 
+  const [deliveringId, setDeliveringId] = useState(null);
+
   const handleUpdateStatus = async (id, status, signature = null, receivedQty = null) => {
+    setDeliveringId(id);
     try {
       await api.updateManifest(id, status, signature, receivedQty);
-      loadManifests();
+      await loadManifests();
       setActiveSignId(null);
     } catch (err) {
       alert(`Update failed: ${err.message}`);
+    } finally {
+      setDeliveringId(null);
     }
   };
 
@@ -101,7 +106,23 @@ export default function DriverApp() {
       return;
     }
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      alert('Signature canvas not loaded. Please try again.');
+      return;
+    }
+    
+    // Check if canvas is drawn on (not fully blank)
+    const isCanvasBlank = (c) => {
+      const blank = document.createElement('canvas');
+      blank.width = c.width;
+      blank.height = c.height;
+      return c.toDataURL() === blank.toDataURL();
+    };
+
+    if (isCanvasBlank(canvas)) {
+      alert('Please draw a signature on the canvas before confirming receipt.');
+      return;
+    }
     
     // Get base64 data string representation of drawn canvas
     const signatureDataUrl = canvas.toDataURL('image/png');
@@ -327,14 +348,14 @@ export default function DriverApp() {
                     <button 
                       className="btn btn-primary"
                       onClick={() => submitSignature(m.id)}
-                      disabled={receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === ''}
+                      disabled={deliveringId !== null || receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === ''}
                       style={{ 
                         flex: 2.2,
                         background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                        opacity: (receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === '') ? 0.5 : 1
+                        opacity: (deliveringId !== null || receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === '') ? 0.5 : 1
                       }}
                     >
-                      Confirm Signature & Deliver
+                      {deliveringId === m.id ? 'Delivering...' : 'Confirm Signature & Deliver'}
                     </button>
                   </div>
                 </div>

@@ -235,10 +235,9 @@ export const dbService = {
   async saveInventory(inventory) {
     if (db) {
       try {
-        // Batch write or individual setDoc for simplicity
-        for (const item of inventory) {
-          await setDoc(doc(db, 'inventory', item.id.toString()), item);
-        }
+        await Promise.all(
+          inventory.map(item => setDoc(doc(db, 'inventory', item.id.toString()), item))
+        );
         return;
       } catch (e) {
         console.error('Firestore saveInventory error, falling back:', e);
@@ -314,9 +313,9 @@ export const dbService = {
   async saveManifests(manifests) {
     if (db) {
       try {
-        for (const m of manifests) {
-          await setDoc(doc(db, 'manifests', m.id.toString()), m);
-        }
+        await Promise.all(
+          manifests.map(m => setDoc(doc(db, 'manifests', m.id.toString()), m))
+        );
         return;
       } catch (e) {
         console.error('Firestore saveManifests error, falling back:', e);
