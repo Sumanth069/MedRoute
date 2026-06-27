@@ -41,33 +41,32 @@ We have completely reimagined medical supply chains as a **unified, self-reconci
 
 ## ✨ Features That Define the Platform
 
-> *"It’s not just a tracking app; it’s an evolutionary intelligence system routing life-saving medicines."*
+> *"It’s not just a tracking app; it’s an intelligent coordination network saving life-saving medicines."*
 
-### 🧬 Real-Time Genetic Algorithm Optimizer
+### ⚡ Smart Redistribution Optimizer
+With a single tap, the platform coordinates and balances supply across all health clinics in the district. It instantly recommends optimal transfers, matching surplus stock to clinics facing critical shortages in seconds.
 
-Click "Run Resource Optimizer" and witness a live client-side Genetic Algorithm (GA) solve the multi-objective redistribution and routing problem. Watch as parents are selected, chromosomes crossover, and adaptive mutations occur over 30 generations to calculate the most cost-effective and low-wastage transfer paths.
+### 🗺️ Live District Inventory Map
+A high-performance, real-time map displaying clinic safety levels across the region. Hover over recommendations to view active transfer routes, travel times, and critical alert states instantly.
 
-### 🗺️ Spatiotemporal District Telemetry
-A premium, CartoDB Positron interactive map showing live clinic safety horizons. Hover over recommended transfers to see active routing paths, travel times, and critical warnings change state instantly.
+### 🏥 Pharmacist Stock Verification
+A clean ledger tool for local pharmacists featuring **Digit-Swap Typo Protection**. It automatically detects and warns staff of transposed number errors (like entering `59` instead of `95`) during physical stock audits.
 
-### 🏥 Advanced Pharmacist Stock Ledger
-Equipped with a real-time gateway status indicator and **Digit-Swap Typo Protection**. The console detects common human entry errors (e.g. transposing `59` instead of `95`), securing database integrity before log submission.
+### ⚡ Auto-Requisition Center
+Eliminates administrative delays. If a clinic's supplies fall below a 10-day safety limit, the pharmacist can trigger a smart transfer request to pull inventory from the closest surplus facility automatically.
 
-### ⚡ Automated Requisition & Surplus Matching
-When inventory levels drop below a 10-day safety limit, pharmacists can trigger an auto-requisition. The engine automatically finds the best surplus clinic in the district, processes the transfer manifest, and schedules pick-up.
-
-### 🚚 PWA Logistics Driver Console
-Drivers confirm exact physical counts instead of blind-signing receipts. Built with interactive canvas signing, real-time discrepancy alerts, and a 3-second bottom-sliding installer banner to convert the site into a standalone native app on Android or iOS.
+### 🚚 Offline Driver Portal
+Designed for drivers in network dead zones. Allows delivery staff to confirm actual intake counts, flag transit discrepancies, and capture digital signatures on-screen with zero cell coverage.
 
 ---
 
-## 🛠️ The Intelligence & AI Layer
+## 🧠 Under the Hood: Smart Client-Side Computing
 
 MedRoute remains 100% serverless and hostable on global CDNs by executing its advanced computational models client-side:
 
-* **Demand Forecaster**: A mathematical engine calculating consumption rates, seasonal trend scores (monsoon snakebite spikes, respiratory winter surges), and visit changes to predict days until stockout.
-* **XAI (Explainable AI)**: Features built-in SHAP additive feature weights showing pharmacists and DHO officers exactly which metrics contributed to the forecast.
-* **Multi-Objective Optimizer (GA)**: Runs an evolutionary tournament solver (Population: 40, Generations: 30) optimizing for distance saved, vaccine value preserved, and stockout duration minimized.
+* **Demand Forecasting**: Predicts stockout horizons by analyzing consumption rates, seasonal trend scores (e.g. monsoon snakebite spikes), and clinic visit histories.
+* **Explainable Diagnostics**: Shows officers and pharmacists exactly what factors (expiry dates, consumption jumps) drove the system's recommendations.
+* **Multi-Objective Routing**: Solves complex vehicle routing paths locally, minimizing total travel distances while maximizing vaccine value preserved.
 
 ---
 
