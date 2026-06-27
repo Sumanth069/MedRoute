@@ -4,7 +4,8 @@ import DriverApp from './pages/DriverApp';
 import Analytics from './pages/Analytics';
 import ClinicDetail from './pages/ClinicDetail';
 import Login from './pages/Login';
-import { Compass, Truck, BarChart2, LogOut, ShieldCheck, User } from 'lucide-react';
+import PharmacistConsole from './pages/PharmacistConsole';
+import { Compass, Truck, BarChart2, LogOut, ShieldCheck, User, Download } from 'lucide-react';
 
 export default function App() {
   // Session-based user profile state
@@ -14,6 +15,25 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      console.log("PWA beforeinstallprompt event captured.");
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    console.log(`PWA install outcome: ${outcome}`);
+    setInstallPrompt(null);
+  };
 
   const handleLogin = (loggedInUser) => {
     setUser(loggedInUser);
@@ -98,7 +118,31 @@ export default function App() {
 
         {/* User Badge & Logout Option */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', fontSize: '12px' }}>
+          {installPrompt && (
+            <button 
+              className="btn btn-primary"
+              onClick={handleInstallClick}
+              style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                color: '#ffffff',
+                border: 'none',
+                height: '34px',
+                padding: '0 12px',
+                fontSize: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: '600'
+              }}
+            >
+              <Download size={14} />
+              Install App
+            </button>
+          )}
+
+          <div className="header-user-info" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', fontSize: '12px' }}>
             <span style={{ fontWeight: '700', color: 'var(--text-bright)', display: 'flex', alignItems: 'center', gap: '4px' }}>
               <User size={13} style={{ color: 'var(--accent-blue)' }} />
               {user.name}
@@ -135,15 +179,9 @@ export default function App() {
         {user.role === 'admin' && activeTab === 'analytics' && <Analytics />}
         {user.role === 'driver' && <DriverApp />}
         
-        {/* Pharmacist View: immediately loads single Ramanagara PHC panel in full-screen content */}
+        {/* Pharmacist View: loads the advanced verification console */}
         {user.role === 'pharmacist' && (
-          <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
-            <ClinicDetail 
-              clinicId={user.clinicId} 
-              onClose={() => {}} 
-              isEmbedded={true}
-            />
-          </div>
+          <PharmacistConsole clinicId={user.clinicId} />
         )}
       </main>
       

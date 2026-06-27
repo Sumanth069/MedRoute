@@ -252,6 +252,91 @@ export const api = {
     return { success: true, status: manifest.status };
   },
 
+  // Pharmacist verification audit
+  async auditInventory(clinicId, medicineId, actualCount) {
+    const inventory = await dbService.getInventory();
+    const invItem = inventory.find(inv => 
+      Number(inv.clinic_id) === Number(clinicId) && 
+      Number(inv.medicine_id) === Number(medicineId)
+    );
+    if (!invItem) throw new Error('Inventory record not found');
+    
+    const oldCount = invItem.current_stock;
+    invItem.current_stock = parseInt(actualCount);
+    
+    await dbService.saveInventory(inventory);
+    
+    // Trigger alert
+    if (this._onAlertCallback) {
+      this._onAlertCallback({
+        type: 'audit_verified',
+        message: `AUDIT VERIFIED: PHC Pharmacist audited stock for item. Count adjusted from ${oldCount} to ${actualCount} units.`,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    return { success: true, old_count: oldCount, new_count: invItem.current_stock };
+  },
+
+  // Request auto-transfer from nearby surplus
+  async requestAutoRequisition(clinicId, medicineId) {
+    const clinics = await dbService.getClinics();
+    const inventory = await dbService.getInventory();
+    const medicines = await dbService.getMedicines();
+    
+    const targetMed = medicines.find(m => Number(m.id) === Number(medicineId));
+    const targetClinic = clinics.find(c => Number(c.id) === Number(clinicId));
+    
+    if (!targetMed || !targetClinic) throw new Error('Invalid clinic or medicine');
+    
+    // Find a clinic with surplus
+    let bestSource = null;
+    let maxSurplus = -1;
+    
+    inventory.forEach(inv => {
+      if (Number(inv.medicine_id) === Number(medicineId) && Number(inv.clinic_id) !== Number(clinicId)) {
+        if (inv.current_stock > 30 && inv.current_stock > maxSurplus) {
+          maxSurplus = inv.current_stock;
+          bestSource = inv;
+        }
+      }
+    });
+    
+    if (!bestSource) {
+      throw new Error('No surplus source available in the district for this medicine');
+    }
+    
+    const sourceClinic = clinics.find(c => Number(c.id) === Number(bestSource.clinic_id));
+    
+    // Create a manifest transferring 15 units (or less if source has limit)
+    const transferQty = Math.min(20, Math.floor(bestSource.current_stock / 2));
+    
+    const manifestResult = await this.createManifest({
+      source_clinic_id: sourceClinic.id,
+      dest_clinic_id: clinicId,
+      medicine_id: medicineId,
+      quantity: transferQty,
+      estimated_travel_time_mins: 35,
+      distance_km: 18.2
+    });
+    
+    // Trigger alert
+    if (this._onAlertCallback) {
+      this._onAlertCallback({
+        type: 'requisition_triggered',
+        message: `AUTO-REQUISITION: PHC ${targetClinic.name} requested transfer of ${transferQty} units of ${targetMed.name} from surplus PHC ${sourceClinic.name}.`,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    return {
+      success: true,
+      source_clinic_name: sourceClinic.name,
+      quantity: transferQty,
+      medicine_name: targetMed.name
+    };
+  },
+
   // Get statistics
   async getStats() {
     const manifests = await dbService.getManifests();

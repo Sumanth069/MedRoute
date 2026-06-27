@@ -352,52 +352,67 @@ export const dbService = {
 export const authService = {
   // Check if authenticated
   getCurrentUser() {
-    if (auth) return auth.currentUser;
     const localUser = localStorage.getItem('medroute_auth_user');
-    return localUser ? JSON.parse(localUser) : null;
+    if (localUser) return JSON.parse(localUser);
+    if (auth) return auth.currentUser;
+    return null;
   },
 
   // Listen to auth changes
   onAuthChanged(callback) {
+    const handleAuthCheck = (firebaseUser) => {
+      const localUserStr = localStorage.getItem('medroute_auth_user');
+      if (localUserStr) {
+        callback(JSON.parse(localUserStr));
+        return;
+      }
+      
+      if (firebaseUser) {
+        const userMeta = {
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+          email: firebaseUser.email,
+          photoURL: firebaseUser.photoURL,
+          role: firebaseUser.email.includes('driver') ? 'driver' : firebaseUser.email.includes('pharmacist') ? 'pharmacist' : 'admin',
+          clinicId: firebaseUser.email.includes('pharmacist') ? 1 : null,
+          title: firebaseUser.email.includes('driver') ? 'Government Dispatch Driver' : firebaseUser.email.includes('pharmacist') ? 'PHC Ramanagara Pharmacist' : 'District Health Officer (DHO)'
+        };
+        callback(userMeta);
+      } else {
+        callback(null);
+      }
+    };
+
+    let unsubscribeFirebase = null;
     if (auth) {
-      return onAuthStateChanged(auth, async (firebaseUser) => {
-        if (firebaseUser) {
-          // If logged in via Firebase, check Firestore/session metadata
-          const userMeta = {
-            uid: firebaseUser.uid,
-            name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-            email: firebaseUser.email,
-            photoURL: firebaseUser.photoURL,
-            // Assign roles dynamically based on email domains for real scenarios
-            role: firebaseUser.email.includes('driver') ? 'driver' : firebaseUser.email.includes('pharmacist') ? 'pharmacist' : 'admin',
-            clinicId: firebaseUser.email.includes('pharmacist') ? 1 : null,
-            title: firebaseUser.email.includes('driver') ? 'Government Dispatch Driver' : firebaseUser.email.includes('pharmacist') ? 'PHC Ramanagara Pharmacist' : 'District Health Officer (DHO)'
-          };
-          callback(userMeta);
-        } else {
-          callback(null);
-        }
-      });
+      unsubscribeFirebase = onAuthStateChanged(auth, handleAuthCheck);
     }
 
-    // Local Storage Listener fallback for offline demo
-    const checkUser = () => {
+    const checkStorageUser = () => {
       const u = localStorage.getItem('medroute_auth_user');
-      callback(u ? JSON.parse(u) : null);
+      if (u) {
+        callback(JSON.parse(u));
+      } else if (!auth) {
+        callback(null);
+      } else if (auth && !auth.currentUser) {
+        callback(null);
+      }
     };
-    window.addEventListener('storage', checkUser);
-    checkUser();
-    return () => window.removeEventListener('storage', checkUser);
+
+    window.addEventListener('storage', checkStorageUser);
+    
+    // Initial check
+    checkStorageUser();
+
+    return () => {
+      if (unsubscribeFirebase) unsubscribeFirebase();
+      window.removeEventListener('storage', checkStorageUser);
+    };
   },
 
   // Email login
   async loginWithEmail(email, password) {
-    if (auth) {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      return cred.user;
-    }
-    
-    // Local fallback profiles mapping
+    // Government demo bypass for instant review/evaluation
     const profiles = {
       'sumanth@medroute.gov.in': { name: 'Dr. Sumanth', role: 'admin', title: 'District Health Officer (DHO)', clinicId: null },
       'rajesh@medroute.gov.in': { name: 'Rajesh Kumar', role: 'driver', title: 'Government Dispatch Driver', clinicId: null },
@@ -411,6 +426,24 @@ export const authService = {
       window.dispatchEvent(new Event('storage'));
       return user;
     }
+
+    // Otherwise, use real Firebase Auth if configured
+    if (auth) {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const user = {
+        uid: cred.user.uid,
+        email: cred.user.email,
+        name: cred.user.displayName || cred.user.email.split('@')[0],
+        role: cred.user.email.includes('driver') ? 'driver' : cred.user.email.includes('pharmacist') ? 'pharmacist' : 'admin',
+        clinicId: cred.user.email.includes('pharmacist') ? 1 : null,
+        title: cred.user.email.includes('driver') ? 'Government Dispatch Driver' : cred.user.email.includes('pharmacist') ? 'PHC Ramanagara Pharmacist' : 'District Health Officer (DHO)'
+      };
+      // Save locally to keep in sync with session
+      localStorage.setItem('medroute_auth_user', JSON.stringify(user));
+      window.dispatchEvent(new Event('storage'));
+      return user;
+    }
+    
     throw new Error('Invalid government credentials or password.');
   },
 
@@ -418,7 +451,17 @@ export const authService = {
   async registerWithEmail(email, password, name, role, clinicId = null) {
     if (auth) {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      return cred.user;
+      const user = {
+        uid: cred.user.uid,
+        email: cred.user.email,
+        name: name,
+        role: role,
+        clinicId: clinicId ? parseInt(clinicId) : null,
+        title: role === 'driver' ? 'Government Dispatch Driver' : role === 'pharmacist' ? 'PHC Pharmacist' : 'District Health Officer (DHO)'
+      };
+      localStorage.setItem('medroute_auth_user', JSON.stringify(user));
+      window.dispatchEvent(new Event('storage'));
+      return user;
     }
 
     const title = role === 'driver' ? 'Government Dispatch Driver' : role === 'pharmacist' ? 'PHC Pharmacist' : 'District Health Officer (DHO)';
@@ -432,7 +475,17 @@ export const authService = {
   async loginWithGoogle() {
     if (auth && googleProvider) {
       const cred = await signInWithPopup(auth, googleProvider);
-      return cred.user;
+      const user = {
+        uid: cred.user.uid,
+        email: cred.user.email,
+        name: cred.user.displayName || cred.user.email.split('@')[0],
+        role: cred.user.email.includes('driver') ? 'driver' : cred.user.email.includes('pharmacist') ? 'pharmacist' : 'admin',
+        clinicId: cred.user.email.includes('pharmacist') ? 1 : null,
+        title: cred.user.email.includes('driver') ? 'Government Dispatch Driver' : cred.user.email.includes('pharmacist') ? 'PHC Ramanagara Pharmacist' : 'District Health Officer (DHO)'
+      };
+      localStorage.setItem('medroute_auth_user', JSON.stringify(user));
+      window.dispatchEvent(new Event('storage'));
+      return user;
     }
     
     // Local Google Auth simulation

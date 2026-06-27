@@ -796,3 +796,118 @@ header {
   background: rgba(5, 150, 105, 0.08);
   color: var(--accent-green);
 }
+
+/* ==========================================
+   MOBILE RESPONSIVENESS & PERFORMANCE TWEAKS
+   ========================================== */
+
+/* Remove heavy backdrop-filters on mobile to eliminate scrolling lag & jitters */
+@media (max-width: 768px) {
+  .glass-panel, .sidebar, header, .detail-overlay, .driver-manifest-card, .stat-card, .inventory-item, .chart-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.98) !important; /* solid white glass fallback */
+  }
+
+  header {
+    height: 60px;
+    padding: 0 1rem;
+  }
+
+  .logo-text {
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .logo-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Navigation: Hide button text on mobile to avoid overlapping */
+  .nav-links {
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .nav-btn {
+    padding: 6px 10px;
+    height: 32px;
+    font-size: 0 !important; /* Hides text nodes */
+  }
+
+  .nav-btn svg {
+    margin: 0 !important;
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Header: Collapse profile details */
+  .header-user-info {
+    display: none !important;
+  }
+
+  /* Layout: Adjust main panels */
+  .dashboard-container {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 350px auto !important; /* Shorter map so cards are visible */
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+
+  .map-wrapper {
+    height: 350px !important;
+    padding: 8px !important;
+  }
+
+  .sidebar {
+    height: auto !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border-color);
+    box-shadow: none !important;
+  }
+
+  .sidebar-section {
+    padding: 1rem !important;
+  }
+
+  /* Stats metrics cards */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .stat-card {
+    padding: 10px 12px !important;
+  }
+
+  .stat-value {
+    font-size: 18px !important;
+  }
+
+  /* Detail panels overlay: Slide up from bottom on mobile instead of sliding from right */
+  .detail-panel {
+    width: 100% !important;
+    height: 80vh !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border-color);
+    border-radius: 20px 20px 0 0 !important;
+    animation: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* Analytics page responsive grid */
+  .analytics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .chart-card {
+    height: 320px !important;
+    padding: 12px !important;
+  }
+}
