@@ -167,17 +167,7 @@ export default function Login({ onLogin }) {
 
         {/* Tagline / Moving Text Carousel */}
         <div style={{ zIndex: 2, maxWidth: '520px', margin: 'auto 0' }}>
-          <div style={{ 
-            fontSize: '11px', 
-            fontWeight: '800', 
-            color: '#3b82f6', 
-            textTransform: 'uppercase', 
-            letterSpacing: '0.15em',
-            marginBottom: '16px',
-            fontFamily: 'var(--font-mono)'
-          }}>
-            SYSTEM SECURITY PROTOCOL: VERIFIED
-          </div>
+
           
           {/* Animated Quote Wrapper */}
           <div style={{ minHeight: '160px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
