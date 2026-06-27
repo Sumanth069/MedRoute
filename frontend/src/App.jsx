@@ -86,19 +86,7 @@ export default function App() {
 
   // If user is not authenticated, show gateway login screen
   if (!user) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        background: '#f1f5f9',
-        backgroundImage: 'radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.04) 0%, transparent 40%), linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px)',
-        backgroundSize: '100% 100%, 100% 100%, 30px 30px, 30px 30px'
-      }}>
-        <Login onLogin={handleLogin} />
-      </div>
-    );
+    return <Login onLogin={handleLogin} />;
   }
 
   return (

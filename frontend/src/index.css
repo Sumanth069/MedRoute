@@ -913,3 +913,46 @@ header {
     padding: 12px !important;
   }
 }
+
+/* Split Pane Login Layout responsive styles */
+.login-page-wrapper {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.login-brand-panel {
+  display: flex !important;
+}
+
+.mobile-only-header {
+  display: none !important;
+}
+
+.desktop-only-header {
+  display: block !important;
+}
+
+@media (max-width: 900px) {
+  .login-page-wrapper {
+    flex-direction: column !important;
+  }
+  
+  .login-brand-panel {
+    display: none !important;
+  }
+  
+  .login-form-panel {
+    padding: 1.5rem 1rem !important;
+    min-height: 100vh;
+  }
+  
+  .mobile-only-header {
+    display: block !important;
+  }
+  
+  .desktop-only-header {
+    display: none !important;
+  }
+}
