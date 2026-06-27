@@ -16,6 +16,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState('dashboard');
   const [installPrompt, setInstallPrompt] = useState(null);
+  const [showInstallPopup, setShowInstallPopup] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
@@ -27,12 +28,41 @@ export default function App() {
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
 
+  // Trigger bottom slide-up banner after 3 seconds of opening page
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Check if not already in standalone mode
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      if (!isStandalone) {
+        setShowInstallPopup(true);
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleInstallClick = async () => {
     if (!installPrompt) return;
     installPrompt.prompt();
     const { outcome } = await installPrompt.userChoice;
     console.log(`PWA install outcome: ${outcome}`);
     setInstallPrompt(null);
+  };
+
+  const executePwaInstall = async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      console.log(`PWA install outcome: ${outcome}`);
+      setInstallPrompt(null);
+      setShowInstallPopup(false);
+    } else {
+      alert(
+        "💡 Quick PWA Installation Guide:\n\n" +
+        "• Chrome (Android/PC): Tap the three-dot menu icon in the top-right corner of Chrome, then select 'Add to Home screen' or 'Install app'.\n\n" +
+        "• Safari (iPhone): Tap the Share button (square with arrow) at the bottom, then scroll down and select 'Add to Home Screen'."
+      );
+      setShowInstallPopup(false);
+    }
   };
 
   const handleLogin = (loggedInUser) => {
@@ -185,6 +215,95 @@ export default function App() {
         )}
       </main>
       
+      {/* Custom Bottom PWA Installation Popup Banner */}
+      {showInstallPopup && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '90%',
+          maxWidth: '420px',
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          color: '#ffffff',
+          borderRadius: '16px',
+          padding: '16px',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+          zIndex: 100000,
+          animation: 'slide-up-banner 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          border: '1px solid rgba(255, 255, 255, 0.08)'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '700', color: '#38bdf8' }}>
+                  Install MedRoute App
+                </h4>
+                <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#94a3b8', lineHeight: '1.4' }}>
+                  Add MedRoute to your home screen for instant offline inventory access & real-time route updates.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowInstallPopup(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#94a3b8',
+                  fontSize: '18px',
+                  cursor: 'pointer',
+                  padding: '2px',
+                  lineHeight: '1'
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={executePwaInstall}
+                style={{
+                  flex: 1,
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  height: '36px',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  cursor: 'pointer'
+                }}
+              >
+                Install Now
+              </button>
+              <button 
+                onClick={() => setShowInstallPopup(false)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  width: '70px',
+                  height: '36px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+          
+          <style>{`
+            @keyframes slide-up-banner {
+              from { transform: translate(-50%, 120%); opacity: 0; }
+              to { transform: translate(-50%, 0); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
+
       {/* Smooth CSS additions */}
       <style>{`
         /* Reset Leaflet popups on Light mode */
