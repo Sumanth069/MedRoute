@@ -702,6 +702,7 @@ header {
   position: relative;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+  touch-action: none;
 }
 
 .signature-canvas {
@@ -710,6 +711,7 @@ header {
   position: absolute;
   top: 0;
   left: 0;
+  touch-action: none;
 }
 
 /* Analytics Screens */

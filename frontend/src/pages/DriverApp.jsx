@@ -296,7 +296,7 @@ export default function DriverApp() {
                   </div>
                   
                   {/* Drawing Signature Canvas */}
-                  <div className="signature-box" style={{ background: '#f8fafc', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
+                  <div className="signature-box" style={{ background: '#f8fafc', border: '1px solid var(--border-color)', borderRadius: '8px', touchAction: 'none' }}>
                     <canvas 
                       ref={canvasRef}
                       className="signature-canvas"
@@ -309,7 +309,7 @@ export default function DriverApp() {
                       onTouchStart={startDrawing}
                       onTouchMove={draw}
                       onTouchEnd={stopDrawing}
-                      style={{ filter: 'invert(1)', background: 'transparent' }}
+                      style={{ filter: 'invert(1)', background: 'transparent', touchAction: 'none' }}
                     />
                     <div style={{ color: '#94a3b8', fontSize: '11.5px', pointerEvents: 'none' }}>
                       Sign here to confirm receipt
