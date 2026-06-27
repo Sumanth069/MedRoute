@@ -97,6 +97,6 @@ We would love to collaborate with you.
   <img src="frontend/public/logo.svg" width="40" height="40" style="border-radius: 8px;" />
   <p style="font-weight: 500; color: #64748b; font-size: 0.9rem;">
     Built with ❤️ for a Healthier Karnataka.<br/>
-    Initiative by <b>KP Sumanth</b>
+    Initiative by <b>KP Sumanth & Keerthi MB </b>
   </p>
 </div>
