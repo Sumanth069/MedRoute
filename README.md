@@ -1,14 +1,76 @@
-# 🚀 MedRoute: Intelligent Vaccine & Drug Logistics Command Center
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Sumanth069/MedRoute/main/frontend/public/icon-512.png" width="140" height="140" alt="MedRoute Logo" style="border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" />
+  <br/><br/>
+  
+  <h1 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -0.05em; color: #0f172a;">MedRoute</h1>
+  <p style="font-size: 1.5rem; font-weight: 700; color: #3b82f6; letter-spacing: 0.1em; text-transform: uppercase;">ಉಳಿಸಿ ಔಷಧಿ, ಬೆಳೆಸಿ ಜೀವ</p>
+  
+  <p style="font-size: 1.25rem; font-weight: 500; color: #475569; max-width: 600px; margin: 0 auto;">
+    The next-generation smart medical logistics command center solving drug wastage and vaccine stockouts in rural networks.
+  </p>
+  <br/>
 
-MedRoute is a serverless, progressive digital health command console designed to optimize drug inventory levels, eliminate vaccine wastage, and automate emergency supply chain redistribution across rural health clinic networks.
+  <div>
+    <a href="https://med-route-eta.vercel.app/">
+      <img src="https://img.shields.io/badge/Launch_Platform-%E2%86%92-0f172a?style=for-the-badge&logo=vercel&logoColor=white" alt="Launch Platform" />
+    </a>
+    <a href="#features">
+      <img src="https://img.shields.io/badge/Explore_Features-3b82f6?style=for-the-badge" alt="Features" />
+    </a>
+  </div>
+  <br/>
+  
+  <p>
+    <img src="https://img.shields.io/badge/Status-Live_in_Production-success?style=flat-square" alt="Status" />
+    <img src="https://img.shields.io/badge/Platform-Progressive_Web_App-blue?style=flat-square" alt="PWA" />
+    <img src="https://img.shields.io/badge/Region-Ramanagara_District-orange?style=flat-square" alt="Region" />
+  </p>
+</div>
 
 ---
 
-## 💡 The Core Problem & MedRoute's Solution
+## 🌍 The Paradigm Shift
 
-In rural healthcare systems, primary health clinics (PHCs) operate in isolation. This causes a dual supply chain failure: **acute stockouts** of critical medicines (e.g. anti-venom, rabies vaccines) in some clinics, while **massive surpluses expire** on the shelves of nearby facilities.
+For too long, rural healthcare logistics has suffered from isolated clinic management. Primary Health Centers (PHCs) operate as disconnected silos, leading to **severe medicine stockouts** (anti-venoms, vaccines) in one location, while **critical surpluses expire unused** just miles away.
 
-### 📋 Problem-Solution Matrix
+**MedRoute changes everything.**
+
+We have completely reimagined medical supply chains as a **unified, self-reconciling, and AI-optimized digital network.** Built with premium aesthetics, responsive charts, and native-app level performance, MedRoute bridges the communication gap between DHO command officers, local pharmacists, and transit drivers.
+
+---
+
+## ✨ Features That Define the Platform
+
+> *"It’s not just a tracking app; it’s an evolutionary intelligence system routing life-saving medicines."*
+
+### 🧬 Real-Time Genetic Algorithm Router
+Click "Run Resource Optimizer" and witness a live client-side Genetic Algorithm (GA) solve the multi-objective routing problem. Watch as parents are selected, chromosomes crossover, and adaptive mutations occur over 30 generations to calculate the most cost-effective and fuel-efficient path.
+
+### 🗺️ Spatiotemporal District Telemetry
+A premium, CartoDB Positron interactive map showing live clinic safety horizons. Hover over recommended transfers to see active routing paths, travel times, and critical warnings change state instantly.
+
+### 🏥 Advanced Pharmacist Stock Ledger
+Equipped with a real-time gateway status indicator and **Digit-Swap Typo Protection**. The console detects common human entry errors (e.g. transposing `59` instead of `95`), securing database integrity before log submission.
+
+### ⚡ Automated Requisition & Surplus Matching
+When inventory levels drop below a 10-day safety limit, pharmacists can trigger an auto-requisition. The engine automatically finds the best surplus clinic in the district, processes the transfer manifest, and schedules pick-up.
+
+### 🚚 PWA Logistics Driver Console
+Drivers confirm exact physical counts instead of blind-signing receipts. Built with interactive canvas signing, real-time discrepancy alerts, and a 3-second bottom-sliding installer banner to convert the site into a standalone native app on Android or iOS.
+
+---
+
+## 🛠️ The Intelligence & AI Layer
+
+MedRoute remains 100% serverless and hostable on global CDNs by executing its advanced computational models client-side:
+
+* **Demand Forecaster**: A mathematical engine calculating consumption rates, seasonal trend scores (monsoon snakebite spikes, respiratory winter surges), and visit changes to predict days until stockout.
+* **XAI (Explainable AI)**: Features built-in SHAP additive feature weights showing pharmacists and DHO officers exactly which metrics contributed to the forecast.
+* **Multi-Objective Optimizer (GA)**: Runs an evolutionary tournament solver (Population: 40, Generations: 30) optimizing for distance saved, vaccine value preserved, and stockout duration minimized.
+
+---
+
+## 📋 Problem-Solution Matrix
 
 | Rural Health Logistics Challenge | Traditional Manual Logistics | MedRoute's Digital AI Solution |
 | :--- | :--- | :--- |
@@ -19,55 +81,21 @@ In rural healthcare systems, primary health clinics (PHCs) operate in isolation.
 
 ---
 
-## 🎨 System Capabilities by User Persona
+## 🤝 Partner with Us
 
-MedRoute is designed as a unified system composed of three stateful consoles:
+MedRoute is designed to scale across Karnataka. If you represent:
+- **A District Health Office (DHO)** looking to deploy dynamic supply chain routing.
+- **A Municipal Health Department** wanting to coordinate vaccine distribution.
+- **An International Health Agency** working to eliminate rural medical wastage.
 
-### 1. 🏢 District Health Officer (DHO) Command Console
-* **Interactive Spatiotemporal Mapping**: Real-time visualization of Karnataka's Ramanagara district clinics using CartoDB Positron maps and color-coded status pins (Stable, Warning, Critical).
-* **AI Routing Solver Progress Panel**: Displays real-time parameters of the Genetic Algorithm (GA) optimizer, including crossover rates, adaptive mutations, and live fitness score improvements.
-* **Auto-Generated Manifest Cards**: Shows the exact amount, source clinic, destination clinic, travel time, and value saved for each recommended transfer.
+We would love to collaborate with you. 
 
-### 2. 🏥 Primary Health Center (PHC) Pharmacist Console
-* **Sync Status Indicator**: Real-time gateway status indicating network connectivity and database synchronization.
-* **Smart Physical Audit Form**: Features automated digit-swapping checks to detect common human typos (e.g., alert triggers when entering `59` when the system expects `95`).
-* **Auto-Requisition Dispatcher**: Detects stock shortages below the 10-day safety limit, automatically matches the best surplus clinic, and generates a driver dispatch route.
+<br/>
 
-### 3. 🚚 Mobile Dispatcher App (Driver Utility)
-* **Intake Verification Safeguard**: Drivers must count and enter the actual physical quantity received rather than blind-confirming deliveries.
-* **Discrepancy Flags**: Instantly compares the actual received quantity vs the manifest target, automatically logging discrepancies to the central registry.
-* **Digital Signatures**: Canvas-drawn digital signature verification before updating database records.
-
----
-
-## 🛠️ Technology Stack & AI Architecture
-
-1. **Frontend Core**: React 18, Vite, Vanilla CSS glassmorphic tokens, and Lucide React.
-2. **Interactive Maps**: React Leaflet mapping with customized CSS `L.divIcon` containers to prevent Vite bundling hashes from breaking map assets in production.
-3. **Database Integration**: Cloud Firestore (live sync) with a stateful `localStorage` seeder fallback (ensures the app runs fully functional out-of-the-box on Vercel).
-4. **AI Demand Forecaster**: Client-side mathematical scoring incorporating historical consumption, seasonal margins (monsoon snakebites, winter respiratory spikes), and visit trend percentages.
-5. **AI Routing Optimizer**: Multi-Objective Genetic Algorithm (GA) solving NP-Hard vehicle route queries:
-   * **Population Size**: 40 chromosomes
-   * **Generations**: 30 epochs
-   * **Crossover Probability**: 80% (single-point)
-   * **Mutation Probability**: 1.5% (adaptive random swap)
-   * **Objectives**: Minimized travel distance, maximized waste prevention, and minimized clinic stockout durations.
-
----
-
-## ⚙️ How to Run Locally
-
-To launch the project on your local system:
-
-```bash
-# Navigate to the frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the local development server
-npm run dev
-```
-
-*Access the running interface at `http://localhost:5173/`.*
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Sumanth069/MedRoute/main/frontend/public/icon-512.png" width="40" height="40" style="border-radius: 8px;" />
+  <p style="font-weight: 500; color: #64748b; font-size: 0.9rem;">
+    Built with ❤️ for a Healthier Karnataka.<br/>
+    Initiative by <b>KP Sumanth</b>
+  </p>
+</div>
