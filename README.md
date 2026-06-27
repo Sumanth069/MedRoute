@@ -43,8 +43,9 @@ We have completely reimagined medical supply chains as a **unified, self-reconci
 
 > *"It’s not just a tracking app; it’s an evolutionary intelligence system routing life-saving medicines."*
 
-### 🧬 Real-Time Genetic Algorithm Router
-Click "Run Resource Optimizer" and witness a live client-side Genetic Algorithm (GA) solve the multi-objective routing problem. Watch as parents are selected, chromosomes crossover, and adaptive mutations occur over 30 generations to calculate the most cost-effective and fuel-efficient path.
+### 🧬 Real-Time Genetic Algorithm Optimizer
+
+Click "Run Resource Optimizer" and witness a live client-side Genetic Algorithm (GA) solve the multi-objective redistribution and routing problem. Watch as parents are selected, chromosomes crossover, and adaptive mutations occur over 30 generations to calculate the most cost-effective and low-wastage transfer paths.
 
 ### 🗺️ Spatiotemporal District Telemetry
 A premium, CartoDB Positron interactive map showing live clinic safety horizons. Hover over recommended transfers to see active routing paths, travel times, and critical warnings change state instantly.

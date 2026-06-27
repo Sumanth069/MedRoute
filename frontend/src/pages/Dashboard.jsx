@@ -285,7 +285,7 @@ export default function Dashboard() {
             </div>
             <div className="glass-panel" style={{ padding: '6px 8px', borderRadius: '8px', textAlign: 'center', background: 'rgba(255, 255, 255, 0.4)' }}>
               <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase', marginBottom: '2px' }}>Mutation</div>
-              <strong style={{ color: 'var(--text-bright)' }}>30% rate</strong>
+              <strong style={{ color: 'var(--text-bright)' }}>1.5% rate</strong>
             </div>
           </div>
         </div>
