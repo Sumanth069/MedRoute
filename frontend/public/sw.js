@@ -2,9 +2,6 @@ const CACHE_NAME = 'medroute-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/src/main.jsx',
-  '/src/App.jsx',
-  '/src/index.css',
   '/logo.svg',
   '/icon-192.png',
   '/icon-512.png',
