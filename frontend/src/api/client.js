@@ -5,9 +5,11 @@ import { optimizer } from './optimizer';
 export const api = {
   // Get all clinics, computing their counts and overall status on-the-fly
   async getClinics() {
-    const clinics = await dbService.getClinics();
-    const medicines = await dbService.getMedicines();
-    const inventory = await dbService.getInventory();
+    const [clinics, medicines, inventory] = await Promise.all([
+      dbService.getClinics(),
+      dbService.getMedicines(),
+      dbService.getInventory()
+    ]);
 
     return clinics.map(clinic => {
       let criticalCount = 0;
@@ -60,12 +62,13 @@ export const api = {
 
   // Get clinic details including full inventories and SHAP AI forecasting
   async getClinicDetail(id) {
-    const clinics = await dbService.getClinics();
+    const [clinics, medicines, inventory] = await Promise.all([
+      dbService.getClinics(),
+      dbService.getMedicines(),
+      dbService.getInventory()
+    ]);
     const clinic = clinics.find(c => Number(c.id) === Number(id));
     if (!clinic) throw new Error('Clinic not found');
-
-    const medicines = await dbService.getMedicines();
-    const inventory = await dbService.getInventory();
 
     const clinicInventory = inventory.filter(inv => Number(inv.clinic_id) === Number(clinic.id));
 
@@ -110,9 +113,11 @@ export const api = {
 
   // Run Genetic Algorithm Optimizer on the client-side
   async runOptimizer() {
-    const clinics = await dbService.getClinics();
-    const medicines = await dbService.getMedicines();
-    const inventory = await dbService.getInventory();
+    const [clinics, medicines, inventory] = await Promise.all([
+      dbService.getClinics(),
+      dbService.getMedicines(),
+      dbService.getInventory()
+    ]);
 
     return optimizer.run(clinics, medicines, inventory);
   },
@@ -134,9 +139,11 @@ export const api = {
     await dbService.saveInventory(inventory);
 
     // Save new manifest
-    const manifests = await dbService.getManifests();
-    const medicines = await dbService.getMedicines();
-    const clinics = await dbService.getClinics();
+    const [manifests, medicines, clinics] = await Promise.all([
+      dbService.getManifests(),
+      dbService.getMedicines(),
+      dbService.getClinics()
+    ]);
     
     const med = medicines.find(m => Number(m.id) === Number(manifestData.medicine_id));
     const srcClinic = clinics.find(c => Number(c.id) === Number(manifestData.source_clinic_id));
@@ -280,9 +287,11 @@ export const api = {
 
   // Request auto-transfer from nearby surplus
   async requestAutoRequisition(clinicId, medicineId) {
-    const clinics = await dbService.getClinics();
-    const inventory = await dbService.getInventory();
-    const medicines = await dbService.getMedicines();
+    const [clinics, inventory, medicines] = await Promise.all([
+      dbService.getClinics(),
+      dbService.getInventory(),
+      dbService.getMedicines()
+    ]);
     
     const targetMed = medicines.find(m => Number(m.id) === Number(medicineId));
     const targetClinic = clinics.find(c => Number(c.id) === Number(clinicId));

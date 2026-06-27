@@ -316,10 +316,11 @@ export default function DriverApp() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '12px', width: '100%' }}>
                     <button 
                       className="btn btn-secondary" 
                       onClick={() => setActiveSignId(null)}
+                      style={{ flex: 1 }}
                     >
                       Cancel
                     </button>
@@ -328,6 +329,7 @@ export default function DriverApp() {
                       onClick={() => submitSignature(m.id)}
                       disabled={receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === ''}
                       style={{ 
+                        flex: 2.2,
                         background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                         opacity: (receivedQuantities[m.id] === undefined || receivedQuantities[m.id] === '') ? 0.5 : 1
                       }}
