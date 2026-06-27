@@ -6,6 +6,13 @@ import { Truck, MapPin, CheckCircle, RefreshCw, Compass, ArrowRight, Trash2, Edi
 export default function DriverApp() {
   const [manifests, setManifests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isStandalone, setIsStandalone] = useState(true);
+
+  useEffect(() => {
+    const standaloneCheck = window.matchMedia('(display-mode: standalone)').matches;
+    setIsStandalone(standaloneCheck);
+  }, []);
+
   const [activeSignId, setActiveSignId] = useState(null);
   const [receivedQuantities, setReceivedQuantities] = useState({});
   
@@ -103,6 +110,30 @@ export default function DriverApp() {
 
   return (
     <div className="driver-container">
+      {/* PWA Install Help banner for drivers */}
+      {!isStandalone && (
+        <div style={{
+          background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+          border: '1px solid #7dd3fc',
+          borderRadius: '12px',
+          padding: '14px',
+          marginBottom: '16px',
+          color: '#0369a1',
+          fontSize: '13px',
+          lineHeight: '1.5'
+        }}>
+          <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '700', color: '#0369a1' }}>
+            💡 PWA Install Guide
+          </h4>
+          To install this app on your home screen for quick offline access:
+          <ul style={{ margin: '6px 0 0 0', paddingLeft: '18px' }}>
+            <li><strong>Android / Chrome:</strong> Tap the green <strong>"Install App"</strong> button in the top header (or select "Add to Home screen" in Chrome menu).</li>
+            <li><strong>iPhone / Safari:</strong> Tap the browser <strong>Share</strong> button and select <strong>"Add to Home Screen"</strong>.</li>
+            <li><em>Note: If you are opening this from Instagram or WhatsApp, open it in your regular browser (Chrome or Safari) to enable installation.</em></li>
+          </ul>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <div>
           <h2 style={{ fontSize: '20px', color: 'var(--text-bright)', margin: 0 }}>Driver Manifests</h2>
