@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Sumanth069/MedRoute/main/frontend/public/icon-512.png" width="140" height="140" alt="MedRoute Logo" style="border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" />
+  <img src="frontend/public/logo.svg" width="140" height="140" alt="MedRoute Logo" style="border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" />
   <br/><br/>
   
   <h1 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -0.05em; color: #0f172a;">MedRoute</h1>
@@ -93,7 +93,7 @@ We would love to collaborate with you.
 <br/>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Sumanth069/MedRoute/main/frontend/public/icon-512.png" width="40" height="40" style="border-radius: 8px;" />
+  <img src="frontend/public/logo.svg" width="40" height="40" style="border-radius: 8px;" />
   <p style="font-weight: 500; color: #64748b; font-size: 0.9rem;">
     Built with ❤️ for a Healthier Karnataka.<br/>
     Initiative by <b>KP Sumanth</b>
