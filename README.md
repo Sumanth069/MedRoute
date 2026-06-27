@@ -3,7 +3,7 @@
   <br/><br/>
   
   <h1 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -0.05em; color: #0f172a;">MedRoute</h1>
-  <p style="font-size: 1.5rem; font-weight: 700; color: #3b82f6; letter-spacing: 0.1em; text-transform: uppercase;">PREDICT. RECONCILE. REDISTRIBUTE.</p>
+  <p style="font-size: 1.5rem; font-weight: 700; color: #3b82f6; letter-spacing: 0.1em; text-transform: uppercase;">SAVE MEDICINES. SAVE LIVES.</p>
   
   <p style="font-size: 1.25rem; font-weight: 500; color: #475569; max-width: 600px; margin: 0 auto;">
     The next-generation smart medical logistics command center solving drug wastage and vaccine stockouts in rural networks.
